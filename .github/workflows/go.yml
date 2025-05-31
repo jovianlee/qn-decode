@@ -16,6 +16,9 @@ jobs:
       matrix:
         goos: [windows, linux, darwin]
         goarch: [386, arm64]
+        exclude:
+        - goos: darwin
+          goarch: 386
 
     name: Build for ${{ matrix.goos }}-${{ matrix.goarch }}
 

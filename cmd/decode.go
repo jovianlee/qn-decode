@@ -9,7 +9,7 @@ import (
 	"strings"
 
 	"github.com/fatih/color"
-	"github.com/luanxuechao/qn-decode/util"
+	"github.com/jovianlee/qn-decode/util"
 	"github.com/nu11ptr/cmpb"
 	"github.com/spf13/cobra"
 )

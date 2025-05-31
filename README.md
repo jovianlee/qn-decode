@@ -5,16 +5,11 @@ The repo is used for learning, if there is any infringement, please contact the 
 
 
 ## Installing
-### Homebrew
-```
-$ brew tap luanxuechao/tools
-$ brew install qn-decode
-```
 
 ### GO
 Using `qn-decode` is easy. First, use go get to install the latest version of the library. This command will install the `qn-decode` generator executable along with the library and its dependencies:
 ```
-go get github.com/luanxuechao/qn-decode
+go install github.com/jovianlee/qn-decode@latest
 ```
 
 ## Usage
@@ -41,10 +36,12 @@ Use "qn-decode [command] --help" for more information about a command.
 ### Reference
  - https://github.com/MBearo/qmcdump
  - https://github.com/yoki123/ncmdump
+ - https://github.com/luanxuechao/qn-decode
+
 ### Example
 ```
-$  decode -d /Users/xuechaoluan/Downloads
+$  decode -d ~/Downloads
 ```
 ```
-$  decode -f /Users/xuechaoluan/Downloads/xxxx.qmc3
+$  decode -f ~/Downloads/xxxx.qmc3
 ```

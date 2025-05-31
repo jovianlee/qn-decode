@@ -1,4 +1,4 @@
-module github.com/luanxuechao/qn-decode
+module github.com/jovianlee/qn-decode
 
 go 1.14
 

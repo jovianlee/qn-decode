@@ -1,4 +1,7 @@
 ## qn-decode
+
+网易云音乐格式转化
+
 A command tool for transfering  `qmcflac`|`qmc0`|`qmc3`|`ncm` to `mp3` or `flac`.
 
 The repo is used for learning, if there is any infringement, please contact the author to delete

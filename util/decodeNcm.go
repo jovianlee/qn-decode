@@ -19,14 +19,14 @@ import (
 
 // Album model
 type Album struct {
-	ID       float64 `json:"albumId"`
-	Name     string  `json:"album"`
-	CoverURL string  `json:"albumPic"`
+	ID       string `json:"albumId"`
+	Name     string `json:"album"`
+	CoverURL string `json:"albumPic"`
 }
 
 // Meta model
 type Meta struct {
-	ID       float64 `json:"musicId"`
+	ID       string  `json:"musicId"`
 	Name     string  `json:"musicName"`
 	Album    *Album  `json:"-"`
 	BitRate  float64 `json:"bitrate"`
@@ -271,23 +271,22 @@ func isFlac(fp *os.File) (bool, error) {
 }
 
 // Dump  info
-func Dump(filePath string, fileName string, p *cmpb.Progress) ([]byte, error) {
+func Dump(filePath string, fileName string, p *cmpb.Progress) error {
 	fp, err := os.Open(filePath)
 	if err != nil {
-		fmt.Printf(err.Error())
-		return nil, errors.New("The file not support")
+		return errors.New("the file is not support")
 	}
 	if result, err := NCMFile(fp); !result || err != nil {
-		return nil, err
+		return err
 	}
 
 	// whether decode key is successful
 	deKeyData, err := Decode(fp)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	if _, err := DumpCover(fp); err != nil {
-		return nil, err
+		return err
 	}
 
 	box := buildKeyBox(deKeyData)
@@ -311,7 +310,7 @@ func Dump(filePath string, fileName string, p *cmpb.Progress) ([]byte, error) {
 	strIndex := strings.LastIndex(filePath, ".")
 
 	if strIndex == -1 {
-		return nil, errors.New("file not expected")
+		return errors.New("file not expected")
 	}
 	isFlacFormat, err := isFlac(fp)
 	newFile := ""
@@ -326,5 +325,5 @@ func Dump(filePath string, fileName string, p *cmpb.Progress) ([]byte, error) {
 		fmt.Printf(err2.Error())
 	}
 
-	return nil, nil
+	return nil
 }

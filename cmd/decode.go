@@ -3,6 +3,7 @@ package cmd
 import (
 	"errors"
 	"io/ioutil"
+	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -29,54 +30,51 @@ var decodeCmd = &cobra.Command{
 	Long:  "",
 	Args: func(cmd *cobra.Command, args []string) error {
 		if FilePath == "" && dirname == "" {
-			return errors.New("Require a file path")
+			return errors.New("require a file path")
 		}
 		if FilePath != "" {
 			_, err := os.Lstat(FilePath)
 			if os.IsNotExist(err) {
-				return errors.New("File not found")
+				return errors.New("file not found")
 			}
 		}
 		if dirname != "" {
 			_, err := os.Lstat(dirname)
 			if os.IsNotExist(err) {
-				return errors.New("Dir not found")
+				return errors.New("dir not found")
 			}
 		}
 		return nil
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		decode(args)
+		decode()
 	},
 }
 
 func decodeFile(filePath string, p *cmpb.Progress) error {
 	var strIndex int = strings.LastIndex(filePath, ".")
-	var fileFormat = filePath[strIndex+1 : len(filePath)]
+	var fileFormat = filePath[strIndex+1:]
 	_, fileName := filepath.Split(filePath)
 
 	switch fileFormat {
 	case "qmcflac":
-		util.DecodeQmcFlac(filePath, fileName, p)
-		break
+		return util.DecodeQmcFlac(filePath, fileName, p)
 	case "qmc0", "qmc3":
-		util.DecodeQmc0OrQmc3(filePath, fileName, p)
-		break
+		return util.DecodeQmc0OrQmc3(filePath, fileName, p)
 	case "ncm":
-		util.Dump(filePath, fileName, p)
-		break
+		return util.Dump(filePath, fileName, p)
 	default:
-		return errors.New("The file not support")
+		return errors.New("the file not support")
 	}
-	return nil
 }
 func decodeDir(p *cmpb.Progress) error {
+	log.Println("Decode Dir:", dirname)
 	s, err := os.Stat(dirname)
 	if err != nil {
-		return errors.New("The dir not found")
+		return errors.New("the dir not found")
 	}
 	if !s.IsDir() {
-		return errors.New("The dir is not a folder")
+		return errors.New("the dir is not a folder")
 	}
 	rd, err := ioutil.ReadDir(dirname)
 	if err != nil {
@@ -89,7 +87,7 @@ func decodeDir(p *cmpb.Progress) error {
 		}
 		name := fi.Name()
 		var strIndex int = strings.LastIndex(name, ".")
-		var fileFormat = name[strIndex+1 : len(name)]
+		var fileFormat = name[strIndex+1:]
 		if fileFormat != "qmcflac" && fileFormat != "qmc0" && fileFormat != "qmc3" && fileFormat != "ncm" {
 			continue
 		}
@@ -97,11 +95,15 @@ func decodeDir(p *cmpb.Progress) error {
 	}
 
 	for _, filePath := range FilePathList {
-		decodeFile(filePath, p)
+		err := decodeFile(filePath, p)
+		if err != nil {
+			log.Println("Decode file error:", err.Error())
+			continue
+		}
 	}
 	return nil
 }
-func decode(args []string) error {
+func decode() error {
 	p := cmpb.New()
 	colors := new(cmpb.BarColors)
 
